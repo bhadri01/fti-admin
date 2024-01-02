@@ -5,11 +5,9 @@ function Root() {
   const router = useNavigate();
   const { userid } = useParams();
   const { pathname } = useLocation();
-  console.log(userid,pathname,localStorage.getItem("userId"))
   useEffect(() => {
     //need to write the user verification login here 
-    if (localStorage.getItem("userId") == userid) {
-      console.log("it's happens right")
+    if (localStorage.getItem("companyName") == userid) {
       router(pathname);
     } else {
       router("/login");

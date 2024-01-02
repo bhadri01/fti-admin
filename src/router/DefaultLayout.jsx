@@ -34,10 +34,21 @@ const Footer = () => <>Footer</>;
 
 const Menu = ({ userid }) => {
   const [Drop, setDrop] = useState(false);
+
   return (
     <div className="top-menu">
-      <div className="title">FTI</div>
+      <div className="title">{userid}</div>
       <div className="menu-list">
+        <div className="menu-item-top">
+          <NavLink
+            to={`/${userid}/dashboard`}
+            className="nav-link"
+            activeclassname="active"
+          >
+            Dashboard
+          </NavLink>
+        </div>
+
         <div className="menu-item-top">
           <NavLink
             to={`/${userid}/home`}

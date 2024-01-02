@@ -1,7 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import RJSFFormHandler from "../../views/utils/RJSFFormHandler";
 import { SubmitButton } from "../../views/utils/SubmitButtonHandler";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAxiosFetcher from "../../api/Fetcher";
+import { Toast } from "../../components/alerts";
+import { useState } from "react";
+import Loader from "../../components/Loader";
+import { setTokenCookie } from "../../api/TokenManager";
 
 const schema = {
   title: "FTI Login",
@@ -26,13 +31,42 @@ const uiSchema = {
 };
 
 function login() {
-  const onSubmit = ({ formData }) => {
-    console.log("formData:", formData);
+  const { post, data, error, loading } = useAxiosFetcher();
+  const router = useNavigate();
+  const onSubmit = async ({ formData }) => {
+    // Prevent further action if already loading
+    if (loading) return;
+    post("/api/auth/login", [
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      },
+    ]);
   };
-  const props = {
+  useEffect(() => {
+    if (error) {
+      Toast.error(error);
+    }
+  }, [error]);
+  useEffect(() => {
+    if (data) {
+      Toast.success("successfully logined");
+      setTokenCookie(data.message.token);
+      localStorage.setItem("companyName", data.message.companyName);
+      localStorage.setItem("email", data.message.email);
+      router(`/${data.message.companyName}/dashboard`);
+    }
+  }, [data]);
+
+  var props = {
     uiSchema,
     schema,
-    SubmitButton: () => <SubmitButton name="login" color="primary" />,
+    SubmitButton: () => (
+      <SubmitButton loading={loading} name="login" color="primary" />
+    ),
     onSubmit,
   };
 
@@ -41,6 +75,7 @@ function login() {
       className="w-100 d-flex flex-column justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
+      {loading && <Loader />}
       <RJSFFormHandler {...props} />
       <div className="px-3">
         <div className="fs-5">

@@ -3,7 +3,6 @@ import Form from "@rjsf/bootstrap-4";
 import validator from "@rjsf/validator-ajv8";
 
 function RJSFFormHandler(props) {
-  console.log(props);
   const {
     schema,
     uiSchema = {},

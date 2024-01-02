@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import RJSFFormHandler from "../../views/utils/RJSFFormHandler";
 import { SubmitButton } from "../../views/utils/SubmitButtonHandler";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAxiosFetcher from "../../api/Fetcher";
+import { Toast } from "../../components/alerts";
+import { setTokenCookie } from "../../api/TokenManager";
+import Loader from "../../components/Loader";
 
 const schema = {
   title: "FTI Admin Register",
@@ -31,12 +35,40 @@ const uiSchema = {
   password: {
     "ui:widget": "password",
   },
+  cpassword: {
+    "ui:widget": "password",
+  },
 };
 
 function Register() {
+  const { post, data, error, loading } = useAxiosFetcher();
+  const router = useNavigate();
   const onSubmit = ({ formData }) => {
-    console.log("formData:", formData);
+    if (loading) return;
+    post("/api/auth/register", [
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      },
+    ]);
   };
+  useEffect(() => {
+    if (error) {
+      Toast.error(error);
+    }
+  }, [error]);
+  useEffect(() => {
+    if (data) {
+      Toast.success("successfully logined");
+      setTokenCookie(data.message.token);
+      localStorage.setItem("companyName", data.message.companyName);
+      localStorage.setItem("email", data.message.email);
+      router(`/${data.message.companyName}/dashboard`);
+    }
+  }, [data]);
   const props = {
     uiSchema,
     schema,
@@ -49,6 +81,7 @@ function Register() {
       className="w-100 d-flex flex-column justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
+      {loading && <Loader />}
       <RJSFFormHandler {...props} />
       <div className="px-3">
         <div className="fs-5">
