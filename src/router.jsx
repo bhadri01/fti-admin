@@ -3,7 +3,8 @@ import Login from "./router/auth/Login";
 import Root from "./router/Root";
 import Register from "./router/auth/Register";
 import Home from "./views/dashboard/Home/index";
-import HomeNew from "./views/dashboard/Home";
+import HomeNew from "./views/dashboard/Home/new";
+import HomeEdit from "./views/dashboard/Home/edit";
 import Vision from "./views/dashboard/aboutus/vision";
 import Director from "./views/dashboard/aboutus/director";
 import Rules from "./views/dashboard/aboutus/rules";
@@ -18,11 +19,11 @@ import EditDirector from "./views/dashboard/aboutus/director/edit";
 import NewMember from "./views/dashboard/aboutus/members/new";
 import EditMember from "./views/dashboard/aboutus/members/edit";
 import Dashboard from "./views/dashboard/Dashboard";
-
+import MultiImagesPreview from "./views/dashboard/other/multiImagesPreview";
 export const router = [
   { path: "/login", element: <Login /> },
   { path: "/register", element: <Register /> },
-  { path: "/test", element: <Test /> },
+  { path: "/test", element: <MultiImagesPreview /> },
   {
     path: "/",
     element: <Root />,
@@ -34,7 +35,7 @@ export const router = [
           { path: "dashboard", element: <Dashboard /> },
           { path: "home", element: <Home /> },
           { path: "home/new", element: <HomeNew /> },
-          { path: "home/edit", element: <Home /> },
+          { path: "home/edit", element: <HomeEdit /> },
           { path: "about/vision", element: <Vision /> },
           { path: "about/director", element: <Director /> },
           { path: "about/director/new", element: <NewDirector /> },

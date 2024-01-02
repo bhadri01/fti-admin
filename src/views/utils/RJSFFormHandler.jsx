@@ -8,6 +8,7 @@ function RJSFFormHandler(props) {
     uiSchema = {},
     SubmitButton,
     onSubmit,
+    onError = (errors) => console.log(errors),
     formData = {},
     widgets = {},
   } = props;
@@ -15,7 +16,7 @@ function RJSFFormHandler(props) {
   return (
     <div
       className="container"
-      style={{ width: "clamp(400px,50%,600px)" , padding: "10px 0 50px 0" }}
+      style={{ maxWidth: "600px", padding: "10px 0 50px 0" }}
     >
       <Form
         schema={schema}
@@ -27,7 +28,7 @@ function RJSFFormHandler(props) {
         uiSchema={uiSchema}
         validator={validator}
         onSubmit={onSubmit}
-        onError={log("errors")}
+        onError={onError}
         noHtml5Validate={true}
         showErrorList={false}
         formData={formData}
