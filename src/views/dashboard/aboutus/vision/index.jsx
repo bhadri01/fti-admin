@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import useAxiosFetcher, { APIROOT } from "../../../api/Fetcher";
-import Loader from "../../../components/Loader";
+import useAxiosFetcher, { APIROOT } from "../../../../api/Fetcher";
 import { Link, useParams } from "react-router-dom";
-import { Toast } from "../../../components/alerts";
+import { Toast } from "../../../../components/alerts";
+import Loader from "../../../../components/Loader";
 
-function Home() {
+function Vision() {
   const { get, data, error, loading } = useAxiosFetcher();
   const { userid } = useParams();
   const [FormData, setFormData] = useState(null);
   useEffect(() => {
-    get(`/api/home/${userid}`);
+    get(`/api/aboutus/vision/${userid}`);
   }, []);
   useEffect(() => {
     if (error && FormData) {
@@ -25,9 +25,9 @@ function Home() {
         <Loader />
       ) : FormData ? (
         FormData?.status ? (
-          <HomeDataHas data={FormData?.message} />
+          <VisionDataHas data={FormData?.message} />
         ) : (
-          <HomeDataDont />
+          <VisionDataDont />
         )
       ) : (
         "there is no home data"
@@ -36,9 +36,9 @@ function Home() {
   );
 }
 
-export default Home;
+export default Vision;
 
-const HomeDataHas = ({ data }) => {
+const VisionDataHas = ({ data }) => {
   return (
     <div
       style={{ maxWidth: "800px", margin: "0 auto" }}
@@ -46,31 +46,31 @@ const HomeDataHas = ({ data }) => {
     >
       <div className="alert alert-primary" role="alert">
         <strong>
-          This is the home page content it's reflect on your actual web site
+          This is the vision page content it's reflect on your actual web site
         </strong>
       </div>
 
       <h3>
-        <h5 style={{ textDecoration: "underline" }}>Title1: </h5>
-        {data?.title1}
+        <h5 style={{ textDecoration: "underline" }}>Title: </h5>
+        {data?.aboutTitle}
       </h3>
-      <h3>
-        <h5 style={{ textDecoration: "underline" }}>Title2: </h5>
-        {data?.title2}
-      </h3>
-      <h3>
-        <h5 style={{ textDecoration: "underline" }}>Title3: </h5>
-        {data?.title3}
-      </h3>
-      <hr />
       <p>
         <h5 style={{ textDecoration: "underline" }}>Description: </h5>
-        {data?.description}
+        {data?.about}
       </p>
       <hr />
-      <h5 style={{ textDecoration: "underline" }}>Home Image:</h5>
+      <h3>
+        <h5 style={{ textDecoration: "underline" }}>Title: </h5>
+        {data?.visionTitle}
+      </h3>
+      <p>
+        <h5 style={{ textDecoration: "underline" }}>Description: </h5>
+        {data?.vision}
+      </p>
+      <hr />
+      <h5 style={{ textDecoration: "underline" }}>About Image:</h5>
       <div className="w-100 d-flex flex-wrap justify-content-center gap-3">
-        {data?.HomeImage?.map(({ url }) => (
+        {data?.aboutImage?.map(({ url }) => (
           <img
             style={{ width: "250px", height: "200px", objectFit: "cover" }}
             key={url}
@@ -93,8 +93,7 @@ const HomeDataHas = ({ data }) => {
     </div>
   );
 };
-
-const HomeDataDont = () => {
+const VisionDataDont = () => {
   return (
     <div
       style={{ maxWidth: "800px", margin: "0 auto" }}
@@ -102,14 +101,14 @@ const HomeDataDont = () => {
     >
       <div className="alert alert-danger" role="alert">
         <strong>
-          Still you don't have any home page data to show in the website
+          Still you don't have any vision page data to show in the website
         </strong>
       </div>
       <div
         className="border border-primary p-3 rounded text-capitalize"
         style={{ width: "fit-content" }}
       >
-        <p>Start creating your home page by click create</p>
+        <p>Start creating your vision page by click create</p>
         <button type="button" className="btn btn-success">
           <Link style={{ all: "unset" }} to={"new"}>
             create
@@ -121,59 +120,60 @@ const HomeDataDont = () => {
 };
 
 export const schema = {
-  title: "Home Page",
+  title: "About vision",
   type: "object",
-  required: ["title1", "title2", "title3", "description"],
+  required: ["aboutTitle", "about", "visionTitle", "vision", "aboutImage"],
   properties: {
-    title1: {
+    aboutTitle: {
       type: "string",
-      title: "Title 1",
+      title: "About Title",
     },
-    title2: {
+    about: {
       type: "string",
-      title: "Title 2",
+      title: "About Description",
     },
-    title3: {
+    visionTitle: {
       type: "string",
-      title: "Title 3",
+      title: "Vision Title",
     },
-    description: {
+    vision: {
       type: "string",
-      title: "Description",
+      title: "Vision Description",
     },
-
-    homeCarousel: {
+    aboutImage: {
       type: "array",
-      title: "Home Carousel images",
+      title: "About Image",
       items: {
         type: "string",
         format: "data-url",
       },
-      minItems: 2,
+      maxItems: 1,
     },
   },
 };
 
 export const uiSchema = {
-  title1: {
-    "ui:placeholder": "Enter Title 1",
+  aboutTitle: {
+    "ui:widget": "text",
+    "ui:placeholder": "About Title",
   },
-  title2: {
-    "ui:placeholder": "Enter Title 2",
-  },
-  title3: {
-    "ui:placeholder": "Enter Title 3",
-  },
-  description: {
+  about: {
     "ui:widget": "textarea",
-    "ui:placeholder": "Enter a description",
+    "ui:placeholder": "Detailed description about...",
   },
-  homeCarousel: {
+  visionTitle: {
+    "ui:widget": "text",
+    "ui:placeholder": "Vision Title",
+  },
+  vision: {
+    "ui:widget": "textarea",
+    "ui:placeholder": "Detailed vision description...",
+  },
+  aboutImage: {
     "ui:widget": "imagesWidget",
-    "ui:description":
-      "upload the images for home carousel that display the images in the home page",
+    "ui:description": "upload the image for the aboutus page",
     "ui:options": {
-      accept: ".png",
+      accept: "image/*",
     },
   },
 };

@@ -31,6 +31,34 @@ const useAxiosFetcher = () => {
       setData(response.data);
       setLoading(false);
     } catch (err) {
+      setError(err.response.data.message || err.message);
+      setLoading(false);
+    }
+  };
+
+  // Function for making POST requests
+  const put = async (url, payload) => {
+    try {
+      setLoading(true);
+      const [bodyData, config] = payload;
+      const response = await axios.put(`${APIROOT + url}`, bodyData, config);
+      setData(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.response.data.message);
+      setLoading(false);
+    }
+  };
+
+  // Function for making GET requests
+  const del = async (url, payload) => {
+    try {
+      setLoading(true);
+      const [config] = payload;
+      const response = await axios.delete(`${APIROOT + url}`, config);
+      setData(response.data);
+      setLoading(false);
+    } catch (err) {
       setError(err.response.data.message);
       setLoading(false);
     }
@@ -38,7 +66,7 @@ const useAxiosFetcher = () => {
 
   // Similarly, you can add PUT, DELETE, etc.
 
-  return { get, post, data, error, loading };
+  return { get, post, put, del, data, error, loading };
 };
 
 export default useAxiosFetcher;

@@ -101,11 +101,11 @@ const Menu = ({ userid }) => {
 
         <div className="menu-item-top">
           <NavLink
-            to={`/${userid}/news`}
+            to={`/${userid}/activity`}
             className="nav-link"
             activeclassname="active"
           >
-            News
+            Activity
           </NavLink>
         </div>
         <div className="menu-item-top">

@@ -15,13 +15,16 @@ const HomeEdit = () => {
   const router = useNavigate();
   var widgets = {
     imagesWidget: (props) => (
-      <MultiImagesWidget FormData={FormData} {...props} />
+      <MultiImagesWidget
+        ImageData={"HomeImage"}
+        FormData={FormData}
+        {...props}
+      />
     ),
   };
   const { userid } = useParams();
   const onSubmit = ({ formData }) => {
     if (loading) return;
-    console.log(FormData);
     post(`/api/home/${userid}`, [
       formData,
       {
@@ -45,13 +48,7 @@ const HomeEdit = () => {
         Toast.success(data.message);
         router(`/${userid}/home`);
       } else {
-        console.log(data);
         setFormData(data.message);
-        widgets = {
-          imagesWidget: (props) => (
-            <MultiImagesWidget FormData={FormData} {...props} />
-          ),
-        };
       }
     }
   }, [data]);

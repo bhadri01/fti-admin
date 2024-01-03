@@ -10,10 +10,6 @@ const MembersSchema = {
   "type": "object",
   "required": ["name", "personTitle", "image", "isPresident"],
   "properties": {
-    "id": {
-      "type": "integer",
-      "title": "ID"
-    },
     "name": {
       "type": "string",
       "title": "Name"
@@ -30,10 +26,6 @@ const MembersSchema = {
       "type": "boolean",
       "title": "Is President"
     },
-    "aboutUsDirectorId": {
-      "type": "integer",
-      "title": "About Us Director ID"
-    }
   }
 }
 

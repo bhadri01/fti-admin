@@ -15,11 +15,11 @@ export const MultiImagesWidget = (props) => {
 
   // Load initial images from URLs
   useEffect(() => {
-    let { FormData } = props;
+    let { FormData,ImageData } = props;
     if (FormData) {
       const loadInitialImages = async () => {
         const imagesFromUrls = await Promise.all(
-          FormData.HomeImage.map(async ({ url }) => {
+          FormData[ImageData].map(async ({ url }) => {
             const response = await fetch(`${APIROOT + url}`);
             const blob = await response.blob();
             return toBase64(blob);
@@ -29,7 +29,7 @@ export const MultiImagesWidget = (props) => {
         props.onChange(imagesFromUrls);
       };
 
-      if (FormData.HomeImage && Array.isArray(FormData.HomeImage)) {
+      if (FormData[ImageData] && Array.isArray(FormData[ImageData])) {
         loadInitialImages();
       }
     }

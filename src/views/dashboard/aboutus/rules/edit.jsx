@@ -8,16 +8,14 @@ import { getTokenCookie } from "../../../../api/TokenManager";
 import { Toast } from "../../../../components/alerts";
 import Loader from "../../../../components/Loader";
 
-const value = {};
-
-function ContactEdit() {
+function Rules() {
   const { get, post, data, error, loading } = useAxiosFetcher();
   const [FormData, setFormData] = useState(null);
   const router = useNavigate();
   const { userid } = useParams();
   const onSubmit = ({ formData }) => {
     if (loading) return;
-    post(`/api/aboutus/members/${userid}`, [
+    post(`/api/aboutus/rules/${userid}`, [
       formData,
       {
         headers: {
@@ -38,7 +36,7 @@ function ContactEdit() {
     if (data) {
       if (typeof data.message === "string") {
         Toast.success(data.message);
-        router(`/${userid}/about/members`);
+        router(`/${userid}/about/rules`);
       } else {
         setFormData(data.message);
       }
@@ -46,7 +44,7 @@ function ContactEdit() {
   }, [data]);
 
   useEffect(() => {
-    get(`/api/aboutus/members/${userid}`);
+    get(`/api/aboutus/rules/${userid}`);
   }, []);
 
   const props = {
@@ -63,11 +61,13 @@ function ContactEdit() {
       className="d-flex flex-column gap-3 position-relative"
     >
       <div className="alert alert-primary" role="alert">
-        <strong>Update your rules data and choose the images properly</strong>
+        <strong>
+          Update your rules data and choose the images properly
+        </strong>
       </div>
       {loading ? <Loader /> : FormData && <RJSFFormHandler {...props} />}
     </div>
   );
 }
 
-export default ContactEdit;
+export default Rules;

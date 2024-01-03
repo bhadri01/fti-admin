@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import useAxiosFetcher, { APIROOT } from "../../../api/Fetcher";
-import Loader from "../../../components/Loader";
+import useAxiosFetcher from "../../../../api/Fetcher";
 import { Link, useParams } from "react-router-dom";
-import { Toast } from "../../../components/alerts";
+import { Toast } from "../../../../components/alerts";
+import Loader from "../../../../components/Loader";
 
-function Home() {
+function Rules() {
   const { get, data, error, loading } = useAxiosFetcher();
   const { userid } = useParams();
   const [FormData, setFormData] = useState(null);
   useEffect(() => {
-    get(`/api/home/${userid}`);
+    get(`/api/aboutus/rules/${userid}`);
   }, []);
   useEffect(() => {
     if (error && FormData) {
@@ -25,9 +25,9 @@ function Home() {
         <Loader />
       ) : FormData ? (
         FormData?.status ? (
-          <HomeDataHas data={FormData?.message} />
+          <RulesDataHas data={FormData?.message} />
         ) : (
-          <HomeDataDont />
+          <RulesDataDont />
         )
       ) : (
         "there is no home data"
@@ -36,9 +36,9 @@ function Home() {
   );
 }
 
-export default Home;
+export default Rules;
 
-const HomeDataHas = ({ data }) => {
+const RulesDataHas = ({ data }) => {
   return (
     <div
       style={{ maxWidth: "800px", margin: "0 auto" }}
@@ -46,7 +46,7 @@ const HomeDataHas = ({ data }) => {
     >
       <div className="alert alert-primary" role="alert">
         <strong>
-          This is the home page content it's reflect on your actual web site
+          This is the Rules page content it's reflect on your actual web site
         </strong>
       </div>
 
@@ -68,15 +68,17 @@ const HomeDataHas = ({ data }) => {
         {data?.description}
       </p>
       <hr />
-      <h5 style={{ textDecoration: "underline" }}>Home Image:</h5>
-      <div className="w-100 d-flex flex-wrap justify-content-center gap-3">
-        {data?.HomeImage?.map(({ url }) => (
-          <img
-            style={{ width: "250px", height: "200px", objectFit: "cover" }}
-            key={url}
-            src={`${APIROOT + url}`}
-            alt="home Carousel"
-          />
+      <h5 style={{ textDecoration: "underline" }}>Rules:</h5>
+      <div className="w-100 d-flex flex-column gap-3">
+        {data?.rulesList?.map((e) => (
+          <div className="card" key={e.id}>
+            <div className="card-body d-flex justify-content-between">
+              <strong>{e.cardTiTle}</strong>
+              <a href={e.cardpdfLink} target="_blank">
+              <i className="bi bi-file-earmark-pdf-fill"></i>PDF
+              </a>
+            </div>
+          </div>
         ))}
       </div>
       <div
@@ -93,8 +95,7 @@ const HomeDataHas = ({ data }) => {
     </div>
   );
 };
-
-const HomeDataDont = () => {
+const RulesDataDont = () => {
   return (
     <div
       style={{ maxWidth: "800px", margin: "0 auto" }}
@@ -102,14 +103,18 @@ const HomeDataDont = () => {
     >
       <div className="alert alert-danger" role="alert">
         <strong>
-          Still you don't have any home page data to show in the website
+          Still you don't have any{" "}
+          <u>
+            <i>Rules page</i>
+          </u>{" "}
+          data to show in the website
         </strong>
       </div>
       <div
         className="border border-primary p-3 rounded text-capitalize"
         style={{ width: "fit-content" }}
       >
-        <p>Start creating your home page by click create</p>
+        <p>Start creating your rules page by click create</p>
         <button type="button" className="btn btn-success">
           <Link style={{ all: "unset" }} to={"new"}>
             create
@@ -121,9 +126,9 @@ const HomeDataDont = () => {
 };
 
 export const schema = {
-  title: "Home Page",
+  title: "About Us Rules",
   type: "object",
-  required: ["title1", "title2", "title3", "description"],
+  required: ["title1", "title2", "title3", "description", "rulesList"],
   properties: {
     title1: {
       type: "string",
@@ -141,15 +146,26 @@ export const schema = {
       type: "string",
       title: "Description",
     },
-
-    homeCarousel: {
+    rulesList: {
+      // This is the new addition
       type: "array",
-      title: "Home Carousel images",
+      title: "Rules",
       items: {
-        type: "string",
-        format: "data-url",
+        // Define the structure of each 'Rule' based on RulesSchema
+        type: "object",
+        required: ["cardTiTle", "cardpdfLink"],
+        properties: {
+          cardTiTle: {
+            type: "string",
+            title: "Card Title",
+          },
+          cardpdfLink: {
+            type: "string",
+            title: "Card PDF Link",
+            format: "uri"
+          },
+        },
       },
-      minItems: 2,
     },
   },
 };
@@ -165,15 +181,18 @@ export const uiSchema = {
     "ui:placeholder": "Enter Title 3",
   },
   description: {
-    "ui:widget": "textarea",
-    "ui:placeholder": "Enter a description",
+    "ui:widget": "textarea", // Makes the description field a text area
+    "ui:placeholder": "Enter a detailed description",
   },
-  homeCarousel: {
-    "ui:widget": "imagesWidget",
-    "ui:description":
-      "upload the images for home carousel that display the images in the home page",
-    "ui:options": {
-      accept: ".png",
+  rulesList: {
+    items: {
+      // uiSchema for each item in the rules array
+      cardTile: {
+        "ui:placeholder": "Enter the card title",
+      },
+      cardpdfLink: {
+        "ui:placeholder": "Enter the PDF link",
+      },
     },
   },
 };

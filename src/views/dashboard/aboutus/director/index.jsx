@@ -1,42 +1,65 @@
 import { Link } from "react-router-dom";
 
-
 export const schema = {
-  "title": "About Us Director",
-  "type": "object",
-  "required": ["companyName", "title1", "description", "fileLink", "createdAt", "updatedAt"],
-  "properties": {
-    "id": {
-      "type": "integer",
-      "title": "ID"
+  title: "About Us Director",
+  type: "object",
+  required: [
+    "title1",
+    "title2",
+    "title3",
+    "description",
+    "fileLink",
+    "committeeMembers",
+  ],
+  properties: {
+    title1: {
+      type: "string",
+      title: "Title 1",
     },
-    "companyName": {
-      "type": "string",
-      "title": "Company Name"
+    title2: {
+      type: "string",
+      title: "Title 2",
     },
-    "title1": {
-      "type": "string",
-      "title": "Title 1"
+    title3: {
+      type: "string",
+      title: "Title 3",
     },
-    "title2": {
-      "type": "string",
-      "title": "Title 2"
+    description: {
+      type: "string",
+      title: "Description",
     },
-    "title3": {
-      "type": "string",
-      "title": "Title 3"
+    fileLink: {
+      type: "string",
+      title: "File Link",
     },
-    "description": {
-      "type": "string",
-      "title": "Description"
+    committeeMembers: {
+      type: "array",
+      title: "Committee Members",
+      items: {
+        type: "object",
+        required: ["name", "personTitle", "image", "isPresident"],
+        properties: {
+          name: {
+            type: "string",
+            title: "Name",
+          },
+          personTitle: {
+            type: "string",
+            title: "Person Title",
+          },
+          image: {
+            type: "string",
+            title: "Image",
+          },
+          isPresident: {
+            type: "boolean",
+            title: "Is President",
+          },
+        },
+      },
     },
-    "fileLink": {
-      "type": "string",
-      "title": "File Link"
-    },
-
-  }
-}
+  },
+};
 
 function Director() {
   return (
