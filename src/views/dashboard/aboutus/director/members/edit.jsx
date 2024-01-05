@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
-import useAxiosFetcher from "../../../../api/Fetcher";
+import useAxiosFetcher from "../../../../../api/Fetcher";
 import { useNavigate, useParams } from "react-router-dom";
-import { getTokenCookie } from "../../../../api/TokenManager";
-import { Toast } from "../../../../components/alerts";
-import { SubmitButton } from "../../../utils/SubmitButtonHandler";
-import Loader from "../../../../components/Loader";
-import RJSFFormHandler from "../../../utils/RJSFFormHandler";
+import { MultiImagesWidget } from "../../../../utils/MultiImagePreview";
+import { getTokenCookie } from "../../../../../api/TokenManager";
+import { Toast } from "../../../../../components/alerts";
+import { SubmitButton } from "../../../../utils/SubmitButtonHandler";
+import Loader from "../../../../../components/Loader";
+import RJSFFormHandler from "../../../../utils/RJSFFormHandler";
 import { schema, uiSchema } from ".";
-
-function ContactEdit() {
-  const { get, post, data, error, loading } = useAxiosFetcher();
+function MemberEdit() {
+  const { get, put, data, error, loading } = useAxiosFetcher();
   const [FormData, setFormData] = useState(null);
   const router = useNavigate();
-  const { userid } = useParams();
+
+  var widgets = {
+    imagesWidget: (props) => (
+      <MultiImagesWidget ImageData={"memberImage"} FormData={FormData} {...props} />
+    ),
+  };
+  const { userid, id } = useParams();
   const onSubmit = ({ formData }) => {
     if (loading) return;
-    post(`/api/aboutus/director/${userid}`, [
+    console.log(FormData);
+    put(`/api/aboutus/director/${userid}/director/${id}`, [
       formData,
       {
         headers: {
@@ -34,24 +41,29 @@ function ContactEdit() {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
       if (typeof data.message === "string") {
         Toast.success(data.message);
-        router(`/${userid}/about/director`);
+        router(`/${userid}/about/director/member`);
       } else {
-        setFormData(data.message);
+        if (Array.isArray(data.message)) {
+          setFormData(data.message[0]);
+        } else {
+          setFormData(data.message);
+        }
       }
     }
   }, [data]);
 
   useEffect(() => {
-    get(`/api/aboutus/director/${userid}`);
+    get(`/api/aboutus/director/${userid}/director/${id}`);
   }, []);
-
   const props = {
     uiSchema,
     schema,
     SubmitButton: () => <SubmitButton name="update" color="warning" />,
     onSubmit,
+    widgets,
     formData: FormData,
   };
 
@@ -61,11 +73,13 @@ function ContactEdit() {
       className="d-flex flex-column gap-3 position-relative"
     >
       <div className="alert alert-primary" role="alert">
-        <strong>Update your rules data and choose the images properly</strong>
+        <strong>
+          Update your home banner data and choose the images properly
+        </strong>
       </div>
       {loading ? <Loader /> : FormData && <RJSFFormHandler {...props} />}
     </div>
   );
 }
 
-export default ContactEdit;
+export default MemberEdit;

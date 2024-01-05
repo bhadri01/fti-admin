@@ -1,23 +1,23 @@
 import React, { useEffect } from "react";
-import { MultiImagesWidget } from "../../../utils/MultiImagePreview";
-import RJSFFormHandler from "../../../utils/RJSFFormHandler";
-import { SubmitButton } from "../../../utils/SubmitButtonHandler";
-import { schema, uiSchema } from ".";
-import useAxiosFetcher from "../../../../api/Fetcher";
+import useAxiosFetcher from "../../../../../api/Fetcher";
 import { useNavigate, useParams } from "react-router-dom";
-import { getTokenCookie } from "../../../../api/TokenManager";
-import { Toast } from "../../../../components/alerts";
-import Loader from "../../../../components/Loader";
+import { getTokenCookie } from "../../../../../api/TokenManager";
+import { Toast } from "../../../../../components/alerts";
+import Loader from "../../../../../components/Loader";
+import { MultiImagesWidget } from "../../../../utils/MultiImagePreview";
+import { schema, uiSchema } from ".";
+import RJSFFormHandler from "../../../../utils/RJSFFormHandler";
+import { SubmitButton } from "../../../../utils/SubmitButtonHandler";
 
 const widgets = { imagesWidget: MultiImagesWidget };
 
-const VisionNew = () => {
+function MemberNew() {
   const { post, get, data, error, loading } = useAxiosFetcher();
   const { userid } = useParams();
   const router = useNavigate();
   const onSubmit = ({ formData }) => {
     if (loading) return;
-    post(`/api/aboutus/vision/${userid}`, [
+    post(`/api/aboutus/director/${userid}/director`, [
       formData,
       {
         headers: {
@@ -28,7 +28,6 @@ const VisionNew = () => {
       },
     ]);
   };
-
   useEffect(() => {
     if (error) {
       Toast.error(error);
@@ -39,17 +38,16 @@ const VisionNew = () => {
     if (data) {
       if (typeof data.message === "string" && data.status) {
         Toast.success(data.message);
-        router(`/${userid}/about/vision`);
-      } else if (typeof data.message === "object" && data.status == true) {
-        router(`/${userid}/about/vision/edit`);
+        router(`/${userid}/about/director/member`);
+      } else if (typeof data.message === "string" && !data.status) {
+        router(`/${userid}/about/director`);
       }
     }
   }, [data]);
 
   useEffect(() => {
-    get(`/api/aboutus/vision/${userid}`);
+    get(`/api/aboutus/director/${userid}`);
   }, []);
-
   const props = {
     uiSchema,
     schema,
@@ -64,11 +62,11 @@ const VisionNew = () => {
       className="d-flex flex-column gap-3 position-relative"
     >
       <div className="alert alert-primary" role="alert">
-        <strong>Use this forms to create your vision content</strong>
+        <strong>Use this forms to create your artical content</strong>
       </div>
       {loading ? <Loader /> : <RJSFFormHandler {...props} />}
     </div>
   );
-};
+}
 
-export default VisionNew;
+export default MemberNew;

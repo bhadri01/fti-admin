@@ -4,6 +4,7 @@ import useAxiosFetcher from "../../../api/Fetcher";
 import Loader from "../../../components/Loader";
 import { Toast } from "../../../components/alerts";
 import { getTokenCookie } from "../../../api/TokenManager";
+import Model from "../../../components/modal";
 
 export const schema = {
   title: "Contact Information",
@@ -57,25 +58,18 @@ function Contact() {
       if (typeof data.message === "string" && data.status) {
         Toast.success(data.message);
         get(`/api/contact/${userid}`);
-      }else{
+      } else {
         setFormData(data);
       }
     }
   }, [data]);
   return (
-    <div
-      style={{ maxWidth: "800px", margin: "0 auto" }}
-      className="d-flex flex-column gap-3"
-    >
+    <div className="position-relative w-100 h-100 p-2">
       {loading ? (
         <Loader />
       ) : FormData ? (
         FormData?.status ? (
-          <ContactDataHas
-            data={FormData?.message}
-            del={del}
-            userid={userid}
-          />
+          <ContactDataHas data={FormData?.message} del={del} userid={userid} />
         ) : (
           <ContactDataDont />
         )
@@ -88,8 +82,22 @@ function Contact() {
 
 export default Contact;
 
-const ContactDataHas = ({ data, del, userid}) => {
-  const ContactDelete = (id) => {
+const ContactDataHas = ({ data, del, userid }) => {
+  //delete
+  const [modalShow, setModalShow] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState(null);
+
+  const openModal = (article) => {
+    setSelectedArticle(article);
+    setModalShow(true);
+  };
+
+  const closeModal = () => setModalShow(false);
+
+  const confirmDelete = (id) => {
+    // Your delete logic here, using the article ID or other identifier
+    console.log("Deleting article with ID:", id);
+    // perform delete action here (like calling an API)
     del(`/api/contact/${userid}/${id}`, [
       {
         headers: {
@@ -97,13 +105,21 @@ const ContactDataHas = ({ data, del, userid}) => {
         },
       },
     ]);
-
+    closeModal();
   };
   return (
     <div
       style={{ maxWidth: "800px", margin: "0 auto" }}
       className="d-flex flex-column gap-3"
     >
+      <Model
+        show={modalShow}
+        handleClose={closeModal}
+        handleConfirm={confirmDelete}
+        title="Confirm Delete"
+        body={`Are you sure you want to delete this contact: ${selectedArticle}?`}
+        itemToDelete={selectedArticle}
+      />
       <div className="alert alert-primary" role="alert">
         <strong>
           This is the contact page content; it's reflected on your actual
@@ -148,7 +164,7 @@ const ContactDataHas = ({ data, del, userid}) => {
                 <button
                   type="button"
                   className="btn btn-danger"
-                  onClick={() => ContactDelete(e.id)}
+                  onClick={() => openModal(e.id)}
                 >
                   <i className="bi bi-trash-fill"></i>
                 </button>

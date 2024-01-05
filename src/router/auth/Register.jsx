@@ -44,6 +44,9 @@ function Register() {
   const { post, data, error, loading } = useAxiosFetcher();
   const router = useNavigate();
   const onSubmit = ({ formData }) => {
+    if (formData.password != formData.cpassword) {
+      Toast.error("password and confirm not the same");
+    }
     if (loading) return;
     post("/api/auth/register", [
       formData,

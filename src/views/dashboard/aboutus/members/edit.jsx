@@ -8,7 +8,6 @@ import { getTokenCookie } from "../../../../api/TokenManager";
 import { Toast } from "../../../../components/alerts";
 import Loader from "../../../../components/Loader";
 
-const value = {};
 
 function ContactEdit() {
   const { get, post, data, error, loading } = useAxiosFetcher();

@@ -17,18 +17,22 @@ import Director from "./views/dashboard/aboutus/director";
 import DirectorNew from "./views/dashboard/aboutus/director/new";
 import DirectorEdit from "./views/dashboard/aboutus/director/edit";
 
+import DirectorMember from "./views/dashboard/aboutus/director/members/index";
+import DirectorMemberNew from "./views/dashboard/aboutus/director/members/new";
+import DirectorMemberEdit from "./views/dashboard/aboutus/director/members/edit";
+
 import Rules from "./views/dashboard/aboutus/rules/index";
 import RulesNew from "./views/dashboard/aboutus/rules/new";
 import RulesEdit from "./views/dashboard/aboutus/rules/edit";
 
 import Members from "./views/dashboard/aboutus/members";
+import NewMember from "./views/dashboard/aboutus/members/new";
+import EditMember from "./views/dashboard/aboutus/members/edit";
 
 import Activity from "./views/dashboard/activity/index";
 import ActivityNew from "./views/dashboard/activity/new";
 import ActivityEdit from "./views/dashboard/activity/edit";
 
-import NewMember from "./views/dashboard/aboutus/members/new";
-import EditMember from "./views/dashboard/aboutus/members/edit";
 import Contact from "./views/dashboard/contact/index";
 import NewContact from "./views/dashboard/contact/new";
 import EditContact from "./views/dashboard/contact/edit";
@@ -61,6 +65,13 @@ export const router = [
           { path: "about/director/new", element: <DirectorNew /> },
           { path: "about/director/edit", element: <DirectorEdit /> },
 
+          { path: "about/director/member", element: <DirectorMember /> },
+          { path: "about/director/member/new", element: <DirectorMemberNew /> },
+          {
+            path: "about/director/member/edit/:id",
+            element: <DirectorMemberEdit />,
+          },
+
           { path: "about/rules", element: <Rules /> },
           { path: "about/rules/new", element: <RulesNew /> },
           { path: "about/rules/edit", element: <RulesEdit /> },
@@ -72,7 +83,7 @@ export const router = [
           { path: "activity", element: <Activity /> },
           { path: "activity/new", element: <ActivityNew /> },
           { path: "activity/edit/:id", element: <ActivityEdit /> },
-          
+
           { path: "contact", element: <Contact /> },
           { path: "contact/new", element: <NewContact /> },
           { path: "contact/edit/:id", element: <EditContact /> },

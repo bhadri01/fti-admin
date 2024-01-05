@@ -1,15 +1,32 @@
-import React, { useState } from "react";
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  NavLink,
+  Outlet,
+  Route,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
+import { clearTokenCookie } from "../api/TokenManager";
 
 function DefaultLayout() {
   const { userid } = useParams();
+  const [menuLayout, setMenuLayout] = useState(true);
+  useEffect(() => {
+    if (window.innerWidth > 700) {
+      setMenuLayout(true);
+    } else {
+      setMenuLayout(false);
+    }
+  }, []);
   return (
     <div className="defaultLayout">
-      <div className="menu-layout">
+      <div
+        className={`${menuLayout ? "menu-layout" : "menu-layout menuactive"}`}
+      >
         <Menu userid={userid} />
       </div>
       <div className="w-100 admin-box">
-        <Header />
+        <Header setMenuLayout={setMenuLayout} />
         <div className="actual-content">
           <Outlet />
         </div>
@@ -21,15 +38,68 @@ function DefaultLayout() {
 
 export default DefaultLayout;
 
-const Header = () => (
-  <div
-    className="d-flex justify-content-between
+const Header = ({ setMenuLayout }) => {
+  const route = useNavigate();
+  const ClickHandler = () => {
+    setMenuLayout((a) => !a);
+  };
+  const [Data, setData] = useState({
+    companyName: "",
+    email: "",
+    signout: "signout",
+  });
+  useEffect(() => {
+    setData((a) => ({
+      ...a,
+      companyName: localStorage.getItem("companyName"),
+      email: localStorage.getItem("email"),
+    }));
+  }, []);
+  return (
+    <div
+      className="d-flex justify-content-between
     w-100 p-3 px-4 sticky-top header-menu"
-  >
-    <i className="bi bi-list fs-4"></i>
-    <i className="bi bi-person-fill fs-4"></i>
-  </div>
-);
+    >
+      <i className="bi bi-list fs-4" onClick={ClickHandler}></i>
+      <ul className="navbar-nav">
+        <li className="nav-item dropdown">
+          <span
+            className="nav-link dropdown-toggle"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="bi bi-people-fill"></i>
+          </span>
+          <ul className="dropdown-menu">
+            <li>
+              <a className="dropdown-item" href="#">
+                {Data.companyName}
+              </a>
+            </li>
+            <li>
+              <a className="dropdown-item" href="#">
+                {Data.email}
+              </a>
+            </li>
+            <li>
+              <a
+                className="dropdown-item"
+                onClick={() => {
+                  clearTokenCookie();
+                  route("/login");
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                {Data.signout}
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  );
+};
 const Footer = () => <>Footer</>;
 
 const Menu = ({ userid }) => {

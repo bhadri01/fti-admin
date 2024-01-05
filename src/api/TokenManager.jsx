@@ -1,6 +1,6 @@
 // TokenManager.js
 
-const tokenKey = 'userToken';
+const tokenKey = "userToken";
 
 const setTokenCookie = (token) => {
   const expiresIn = new Date(new Date().getTime() + 60 * 60 * 24 * 1000); // 1 day from now
@@ -10,11 +10,11 @@ const setTokenCookie = (token) => {
 const getTokenCookie = () => {
   const name = `${tokenKey}=`;
   const decodedCookie = decodeURIComponent(document.cookie);
-  const ca = decodedCookie.split(';');
+  const ca = decodedCookie.split(";");
 
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i];
-    while (c.charAt(0) === ' ') {
+    while (c.charAt(0) === " ") {
       c = c.substring(1);
     }
     if (c.indexOf(name) === 0) {
@@ -26,6 +26,7 @@ const getTokenCookie = () => {
 
 const clearTokenCookie = () => {
   document.cookie = `${tokenKey}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+  localStorage.clear();
 };
 
 export { setTokenCookie, getTokenCookie, clearTokenCookie };
